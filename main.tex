@@ -1,0 +1,741 @@
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+%	The MIT License (MIT)
+%
+%	Copyright (c) 2019 Jan Küster
+%
+%	Permission is hereby granted, free of charge, to any person obtaining a copy
+%	of this software and associated documentation files (the "Software"), to deal
+%	in the Software without restriction, including without limitation the rights
+%	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%	copies of the Software, and to permit persons to whom the Software is
+%	furnished to do so, subject to the following conditions:
+%	
+%	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%	THE SOFTWARE.
+%	
+%
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+
+
+%============================================================================%
+%
+%	DOCUMENT DEFINITION
+%
+%============================================================================%
+
+%we use article class because we want to fully customize the page and don't use a cv template
+\documentclass[10pt,A4]{article}	
+
+
+%----------------------------------------------------------------------------------------
+%	ENCODING
+%----------------------------------------------------------------------------------------
+
+% we use utf8 since we want to build from any machine
+\usepackage[utf8]{inputenc}		
+
+%----------------------------------------------------------------------------------------
+%	DATES
+%----------------------------------------------------------------------------------------
+\usepackage{datenumber,fp}
+
+\newcounter{dateone}
+\newcounter{datetwo}
+\newcommand{\difftodayround}[3]{%
+	\setmydatenumber{dateone}{\the\year}{\the\month}{\the\day}%
+	\setmydatenumber{datetwo}{#1}{#2}{#3}%
+	\addtocounter{datetwo}{-\thedateone}%
+	\the\numexpr-\thedatetwo/365 
+} 
+
+\newcounter{date}%
+\newcounter{today}%
+\newcommand{\difftodaytruncate}[3]{%}
+	\setmydatenumber{date}{#1}{#2}{#3}%
+	\setmydatenumber{today}{\the\year}{\the\month}{\the\day}%
+	\FPsub\result{\thetoday}{\thedate}%
+	\FPdiv\myage{\result}{365.2425}%
+	\FPtrunc\myage{\myage}{0}\myage
+}
+
+%----------------------------------------------------------------------------------------
+%	LOGIC
+%----------------------------------------------------------------------------------------
+
+% provides \isempty test
+\usepackage{xstring, xifthen}
+
+%----------------------------------------------------------------------------------------
+%	FONT BASICS
+%----------------------------------------------------------------------------------------
+
+% some tex-live fonts - choose your own
+
+%\usepackage[defaultsans]{droidsans}
+%\usepackage[default]{comfortaa}
+%\usepackage{cmbright}
+\usepackage[default]{raleway}
+%\usepackage{fetamont}
+%\usepackage[default]{gillius}
+%\usepackage[light,math]{iwona}
+%\usepackage[thin]{roboto} 
+
+% set font default
+\renewcommand*\familydefault{\sfdefault} 	
+\usepackage[T1]{fontenc}
+
+% more font size definitions
+\usepackage{moresize}
+
+%----------------------------------------------------------------------------------------
+%	FONT AWESOME ICONS
+%---------------------------------------------------------------------------------------- 
+
+% include the fontawesome icon set
+\usepackage{fontawesome}
+
+% use to vertically center content
+% credits to: http://tex.stackexchange.com/questions/7219/how-to-vertically-center-two-images-next-to-each-other
+\newcommand{\vcenteredinclude}[1]{\begingroup
+\setbox0=\hbox{\includegraphics{#1}}%
+\parbox{\wd0}{\box0}\endgroup}
+
+% use to vertically center content
+% credits to: http://tex.stackexchange.com/questions/7219/how-to-vertically-center-two-images-next-to-each-other
+\newcommand*{\vcenteredhbox}[1]{\begingroup
+\setbox0=\hbox{#1}\parbox{\wd0}{\box0}\endgroup}
+
+% icon shortcut
+\newcommand{\icon}[3] { 							
+	\makebox(#2, #2){\textcolor{maincol}{\csname fa#1\endcsname}}
+}	
+
+% icon with text shortcut
+\newcommand{\icontext}[4]{ 						
+	\vcenteredhbox{\icon{#1}{#2}{#3}}  \hspace{2pt}  \parbox{0.9\mpwidth}{\textcolor{#4}{#3}}
+}
+
+% languages
+\newcommand{\ilanguage}[3]{ 						
+	\vcenteredhbox{} \hspace{2pt} {\textcolor{#3}{#1}} \color{gray}(#2)
+}
+
+% icon with website url
+\newcommand{\iconhref}[5]{ 						
+    \vcenteredhbox{\icon{#1}{#2}{#5}}  \hspace{2pt} \href{#4}{\textcolor{#5}{#3}}
+}
+
+% icon with email link
+\newcommand{\iconemail}[5]{ 						
+    \vcenteredhbox{\icon{#1}{#2}{#5}}  \hspace{2pt} \href{mailto:#4}{\textcolor{#5}{#3}}
+}
+
+%----------------------------------------------------------------------------------------
+%	PAGE LAYOUT  DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+% page outer frames (debug-only)
+% \usepackage{showframe}		
+
+% we use paracol to display breakable two columns
+\usepackage{paracol}
+
+% define page styles using geometry
+\usepackage[a4paper]{geometry}
+
+% remove all possible margins
+\geometry{top=1cm, bottom=1cm, left=1cm, right=1cm}
+
+\usepackage{fancyhdr}
+\pagestyle{empty}
+
+% space between header and content
+% \setlength{\headheight}{0pt}
+
+% indentation is zero
+\setlength{\parindent}{0mm}
+
+%----------------------------------------------------------------------------------------
+%	TABLE /ARRAY DEFINITIONS
+%---------------------------------------------------------------------------------------- 
+
+% extended aligning of tabular cells
+\usepackage{array}
+
+% custom column right-align with fixed width
+% use like p{size} but via x{size}
+\newcolumntype{x}[1]{%
+>{\raggedleft\hspace{0pt}}p{#1}}%
+
+
+%----------------------------------------------------------------------------------------
+%	GRAPHICS DEFINITIONS
+%---------------------------------------------------------------------------------------- 
+
+%for header image
+\usepackage{graphicx}
+
+% use this for floating figures
+% \usepackage{wrapfig}
+% \usepackage{float}
+% \floatstyle{boxed} 
+% \restylefloat{figure}
+
+%for drawing graphics		
+\usepackage{tikz}				
+\usetikzlibrary{shapes, backgrounds,mindmap, trees}
+
+%----------------------------------------------------------------------------------------
+%	Color DEFINITIONS
+%---------------------------------------------------------------------------------------- 
+\usepackage{transparent}
+\usepackage{color}
+
+% primary color
+\definecolor{maincol}{RGB}{ 225, 0, 0 }
+
+% accent color, secondary
+% \definecolor{accentcol}{RGB}{ 250, 150, 10 }
+
+% dark color
+\definecolor{darkcol}{RGB}{ 70, 70, 70 }
+
+% light color
+\definecolor{lightcol}{RGB}{245,245,245}
+
+
+% Package for links, must be the last package used
+\usepackage[hidelinks]{hyperref}
+
+% returns minipage width minus two times \fboxsep
+% to keep padding included in width calculations
+% can also be used for other boxes / environments
+\newcommand{\mpwidth}{\linewidth-\fboxsep-\fboxsep}
+	
+
+
+%============================================================================%
+%
+%	CV COMMANDS
+%
+%============================================================================%
+
+%----------------------------------------------------------------------------------------
+%	 CV LIST
+%----------------------------------------------------------------------------------------
+
+% renders a standard latex list but abstracts away the environment definition (begin/end)
+\newcommand{\cvlist}[1] {
+	\begin{itemize}{#1}\end{itemize}
+}
+
+%----------------------------------------------------------------------------------------
+%	 CV TEXT
+%----------------------------------------------------------------------------------------
+
+% base class to wrap any text based stuff here. Renders like a paragraph.
+% Allows complex commands to be passed, too.
+% param 1: *any
+\newcommand{\cvtext}[1] {
+	\begin{tabular*}{1\mpwidth}{p{0.98\mpwidth}}
+		\parbox{1\mpwidth}{#1}
+	\end{tabular*}
+}
+
+%----------------------------------------------------------------------------------------
+%	CV SECTION
+%----------------------------------------------------------------------------------------
+
+% Renders a a CV section headline with a nice underline in main color.
+% param 1: section title
+\newcommand{\cvsection}[1] {
+	\vspace{14pt}
+	\cvtext{
+		\textbf{\LARGE{\textcolor{darkcol}{\uppercase{#1}}}}\\[-4pt]
+		\textcolor{maincol}{ \rule{0.1\textwidth}{2pt} } \\
+	}
+}
+
+%----------------------------------------------------------------------------------------
+%	META SKILL
+%----------------------------------------------------------------------------------------
+
+% Renders a progress-bar to indicate a certain skill in percent.
+% param 1: name of the skill / tech / etc.
+% param 2: level (for example in years)
+% param 3: percent, values range from 0 to 1
+\newcommand{\cvskill}[3] {
+	\begin{tabular*}{1\mpwidth}{p{0.72\mpwidth}  r}
+ 		\textcolor{black}{\textbf{#1}} & \textcolor{maincol}{#2}\\
+	\end{tabular*}%
+	
+	\hspace{4pt}
+	\begin{tikzpicture}[scale=1,rounded corners=2pt,very thin]
+		\fill [lightcol] (0,0) rectangle (1\mpwidth, 0.15);
+		\fill [maincol] (0,0) rectangle (#3\mpwidth, 0.15);
+  	\end{tikzpicture}%
+}
+
+
+%----------------------------------------------------------------------------------------
+%	 CV EVENT
+%----------------------------------------------------------------------------------------
+
+% Renders a table and a paragraph (cvtext) wrapped in a parbox (to ensure minimum content
+% is glued together when a pagebreak appears).
+% Additional Information can be passed in text or list form (or other environments).
+% the work you did
+% param 1: time-frame i.e. Sep 14 - Jan 15 etc.
+% param 2:	 event name (job position etc.)
+% param 3: Customer, Employer, Industry
+% param 4: Short description
+% param 5: work done (optional)
+% param 6: technologies include (optional)
+% param 7: achievements (optional)
+\newcommand{\cvevent}[7] {
+	
+	% we wrap this part in a parbox, so title and description are not separated on a pagebreak
+	% if you need more control on page breaks, remove the parbox
+	\parbox{\mpwidth}{
+		\begin{tabular*}{1\mpwidth}{p{0.72\mpwidth}  r}
+	 		\textcolor{black}{\textbf{#2}} & \colorbox{maincol}{\makebox[0.25\mpwidth]{\textcolor{white}{#1}}} \\
+			\textcolor{maincol}{\textbf{#3}} & \\
+		\end{tabular*}\\[8pt]
+	
+		\ifthenelse{\isempty{#4}}{}{
+			\cvtext{#4}\\
+		}
+	}
+
+	\ifthenelse{\isempty{#5}}{}{
+		\vspace{9pt}
+		{#5}
+	}
+
+	\ifthenelse{\isempty{#6}}{}{
+		\vspace{9pt}
+		\cvtext{\textbf{Technologies include:}}\\
+		{#6}
+	}
+
+	\ifthenelse{\isempty{#7}}{}{
+		\vspace{9pt}
+		\cvtext{\textbf{Achievements include:}}\\
+		{#7}
+	}
+	\vspace{14pt}
+}
+
+%----------------------------------------------------------------------------------------
+%	 CV META EVENT
+%----------------------------------------------------------------------------------------
+
+% Renders a CV event on the sidebar
+% param 1: title
+% param 2: subtitle (optional)
+% param 3: customer, employer, etc,. (optional)
+% param 4: info text (optional)
+\newcommand{\cvmetaevent}[4] {
+	\textcolor{maincol} {\cvtext{\textbf{\begin{flushleft}#1\end{flushleft}}}}
+
+	\ifthenelse{\isempty{#2}}{}{
+	\textcolor{darkcol} {\cvtext{\textbf{#2}} }
+	}
+
+	\ifthenelse{\isempty{#3}}{}{
+		\cvtext{{ \textcolor{darkcol} {#3} }}\\
+	}
+
+	\cvtext{#4}\\[14pt]
+}
+
+%---------------------------------------------------------------------------------------
+%	QR CODE
+%----------------------------------------------------------------------------------------
+
+% Renders a qrcode image (centered, relative to the parentwidth)
+% param 1: percent width, from 0 to 1
+\newcommand{\cvqrcode}[1] {
+	\begin{center}
+		\includegraphics[width={#1}\mpwidth]{qrcode}
+	\end{center}
+}
+
+
+%============================================================================%
+%
+%
+%
+%	DOCUMENT CONTENT
+%
+%
+%
+%============================================================================%
+\begin{document}
+\columnratio{0.31}
+\setlength{\columnsep}{2.2em}
+\setlength{\columnseprule}{4pt}
+\colseprulecolor{lightcol}
+\begin{paracol}{2}
+\begin{leftcolumn}
+%---------------------------------------------------------------------------------------
+%	META IMAGE
+%----------------------------------------------------------------------------------------
+\includegraphics[width=\linewidth]{untitled.jpg}	%trimming relative to image size
+
+%---------------------------------------------------------------------------------------
+%	META SKILLS
+%----------------------------------------------------------------------------------------
+\cvsection{SKILLS}
+
+\cvskill{Java} {\difftodaytruncate{2013}{10}{1}+ yrs} {1} \\[-2pt]
+
+\cvskill{Spring} {\difftodaytruncate{2019}{10}{1}+ yrs} {0.9} \\[-2pt]
+
+\cvskill{Linux} {\difftodaytruncate{2013}{10}{1}+ yrs} {0.7} \\[-2pt]
+
+\cvskill{Kubernetes} {\difftodaytruncate{2019}{10}{1}+ yrs} {0.6} \\[-2pt]
+
+\cvskill{Scrum} {\difftodaytruncate{2017}{10}{1}+ yrs} {0.9} \\[-2pt]
+
+\cvskill{MongoDB} {\difftodaytruncate{2019}{10}{1}+ yrs} {0.6} \\[-2pt]
+
+\cvskill{SQL} {\difftodaytruncate{2015}{10}{1}+ yrs} {0.7} \\[-2pt]
+
+\cvskill{Maven} {\difftodaytruncate{2013}{10}{1}+ yrs} {0.9} \\[-2pt]
+
+\cvskill{GIT} {\difftodaytruncate{2015}{10}{1}+ yrs} {1} \\[-2pt]
+
+
+\vfill\null
+\cvsection{CONTACT}
+	
+\icontext{MapMarker}{12}{Av. Baía Natural do Seixal\\2845-415 Amora, Portugal }{black}\\[6pt]
+\icontext{MobilePhone}{12}{+351 913 426 750}{black}\\[6pt]
+\iconemail{Envelope}{12}{joaof4moreira@gmail.com}{joaof4moreira@gmail.com}{black}\\[6pt]
+
+\vfill\null
+\cvqrcode{0.7}
+
+%---------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+\newpage
+\cvsection{Social Media}
+
+\icontext{Globe}{12}{https://joaomoreira.site}{black}\\[6pt]
+\icontext{LinkedinSquare}{12}{https://linkedin.com/in/joao-moreira-java}{black}\\[6pt]
+\icontext{Github}{12}{https://github.com/moreirajo}{black}\\[6pt]
+
+\cvsection{EDUCATION}
+
+\cvmetaevent
+{2011 - 2013}
+{M. Sc. Electrical and Computer Engineering.}
+{Universidade Nova de Lisboa}
+{Master studies were focused on the areas of Robotics, Systems (control and automation) and Digital Systems. 
+
+The name of the master thesis was “Análise de Desempenho de Anéis de Controlo Baseado em PCA”. It was a study that used several technics combined to identify faults in a water tank system.}
+
+\cvmetaevent
+{2007 - 2011}
+{B. Sc. Electrical and Computer Engineering.}
+{Universidade Nova de Lisboa}
+{The bachelor's introduce theoretical and practical knowledge in 6 areas of Electrical and Computer Engineering. Namely, Systems (control and automation), Electronic, Energy,	Robotics, Digital Systems and Telecommunications.}
+
+\vfill\null
+\cvqrcode{0.7}
+
+%---------------------------------------------------------------------------------------
+%	CERTIFICATION
+%----------------------------------------------------------------------------------------
+\newpage
+\cvsection{CERTIFICATIONS}
+
+\cvmetaevent
+{Professional Scrum Master I}
+{}
+{}
+{Certificate issued by scrum.org to prove abilities as Scrum Master role.}
+
+\cvmetaevent
+{Oracle Certified Professional - Java SE 7 Programmer}
+{}
+{}
+{Certificate issued by Oracle to prove abilities in Java 7. Licence 2367420720CPJSE7.}
+
+\cvmetaevent
+{Oracle Certified Associate - Java SE 7 Programmer}
+{}
+{}
+{Certificate issued by Oracle to prove abilities in Java 7. Licence 236742072OCAJSE7.}
+
+\cvmetaevent
+{Company trainings}
+{}
+{}
+{In the field of IT consultancy it's frequent companies that give their consultants trainings in that regard. I did some trainings in basics skills development of a consultant, leadership of people and teams and advanced project management to name a few.}
+
+
+\cvmetaevent
+{Online Classes}
+{}
+{}
+{To get more insight in frontend development I did a 2 months training in Javascript ES6 and Angular 7.}
+
+\vfill
+\cvqrcode{0.7}
+
+\newpage
+\cvsection{Languages}
+
+\ilanguage{Portuguese}{native}{black}\\[6pt]
+\ilanguage{English}{advanced}{black}\\[6pt]
+\ilanguage{Spanish}{intermediate}{black}\\[6pt]
+
+\vfill
+\cvqrcode{0.7}
+
+\newpage
+\mbox{} % hotfix to place qrcode on the bottom when there are not other elements
+\vfill
+\cvqrcode{0.7}
+
+\end{leftcolumn}
+\begin{rightcolumn}
+%---------------------------------------------------------------------------------------
+%	TITLE  HEADER
+%----------------------------------------------------------------------------------------
+\fcolorbox{white}{darkcol}{\begin{minipage}[c][3.5cm][c]{1\mpwidth}
+	\begin {center}
+		\HUGE{ \textbf{ \textcolor{white}{ \uppercase{ João Moreira } } } } \\[-24pt]
+		\textcolor{white}{ \rule{0.1\textwidth}{1.25pt} } \\[4pt]
+		\large{ \textcolor{white} {Software Engineer} }
+	\end {center}
+\end{minipage}} \\[14pt]
+\vspace{-12pt}
+
+%---------------------------------------------------------------------------------------
+%	PROFILE
+%----------------------------------------------------------------------------------------
+\vfill\null
+\cvsection{PROFILE}
+
+\cvtext{Portuguese software developer with \difftodaytruncate{1989}{7}{4} years old, I'm in the industry for \difftodayround{2013}{10}{01}\relax\space years. I'm dedicated and always keen to apply the most recent and effective technologies. My focus is Java and all frameworks around that, specially Spring. Very experienced with all lifecycle of the software, from design and architecture to production and maintenance.\\
+
+Provide guidance and share knowledge within the team. Responsible for choosing the best technologies to the project, maintain the code clean and accordingly to the standards. Ensure the software have an accurate and effective documentation.\\
+
+Enthusiastic of agile practices, specially Scrum.\\
+
+}
+
+%---------------------------------------------------------------------------------------
+%	WORK EXPERIENCE
+%----------------------------------------------------------------------------------------
+\vfill\null
+\cvsection{WORK EXPERIENCE}
+
+\cvevent
+	{May 21 - NOW}
+	{DevOps/Lead developer}
+	{Signicat}
+	{Responsible for design and develop a Global Configuration System to be used as a core service in the new company technological platform.}
+	{\cvlist{
+		\item Based on Json Schema
+		\item Event driven architecture
+		\item Api available both in REST and gRPC
+		\item Authorizations based on permissions validated by OPA
+		\item Infrastructure through code
+		\item Expose metrics to prometheus and triggering alerts on alert manager integrating with slack
+	}}
+	{\cvlist {
+		\item Spring Boot, Spring Cloud Sleuth, Spring Security, WebFlux
+		\item MongoDB Atlas
+		\item GKE, Google KMS, Google PubSub, Redis
+		\item K8s, Docker Compose, Helm, Terraform, Swagger
+		\item Git, Maven, JIRA, GitLab CI/CD
+	}}
+	{\cvlist{
+		\item Generic configuration system able to handle company demands
+		\item Java client to communicate with the api using gRPC and with cache updated on demand using streams
+		\item Solid documentation facilitating integration hosted in GitLab pages and written in markdown using mkdocs
+	}}
+
+\vfill\null
+\cvevent
+	{Oct 19 - May 21}
+	{Developer/Scrum Master/Tech Lead}
+	{Signicat}
+	{Design and develop from scratch a solution to automate certificates issue and renewal using ACME protocol.}
+	{\cvlist{
+		\item Microservice architecture
+		\item Store and validate certificates
+		\item Generate Certificate Signing Requests
+		\item Automatic renewal using ACME protocol
+	}}
+	{\cvlist {
+		\item Spring Boot, Spring Security, WebFlux
+		\item MongoDB, Hashicorp Vault
+		\item AWS, RabbitMQ
+		\item K8s, Docker Compose, Helm, Swagger
+		\item Git, Maven, JIRA, GitLab CI/CD, Jenkins
+	}}
+	{\cvlist{
+		\item REST api for managing certificates and csr
+		\item Issue and renewal using Let's Encrypt or Buypass
+	}}
+
+\vfill\null
+\cvevent
+	{Jun 19 - Sep 19}
+	{Developer}
+	{SLIB}
+	{Development and delivery of framework to apply confidentiality and also maker checker in company projects.}
+	{\cvlist{
+		\item Build backend with REST api to allow decision on what a user can see
+		\item Build frontend to manage confidentiality
+		\item Apply maker checker in the frontend
+	}}
+	{\cvlist {
+		\item Java EE, Jboss, Swagger
+		\item PostgresSQL, myBatis, Flyway
+		\item Protactor, Typescript
+		\item XL Deploy
+		\item Git, Maven, JIRA, Bitbucket, Jenkins
+	}}
+	{\cvlist{
+		\item Make available a framework that handles confidentiality for others to use
+		\item Let the user configure their confidentiality needs through a nice and intuitive UI
+		\item Changes made in the UI were only effective when other person approve them
+	}}
+
+\vfill\null
+\cvevent
+	{Nov 17 - Jun 19}
+	{Developer}
+	{SLIB}
+	{Development and delivery new risk monitoring software tool based on a legacy project}
+	{\cvlist{
+		\item Develop a new risk monitoring tool more generic
+		\item Frontend to interact with the tool
+		\item Develop connectors to convert different market trades format to a common one
+	}}
+	{\cvlist {
+		\item Java EE, Jboss, GWT, ActiveMQ
+		\item Oracle, JPA, Flyway
+		\item XL Deploy
+		\item Git, Maven, JIRA, Bitbucket, Jenkins
+	}}
+	{\cvlist{
+		\item Software with a very good performance
+		\item Nice and friendly UI
+		\item Integration with several markets in all continents
+		\item Software generic enough to be used by any Clearing House in the market
+	}}
+
+\vfill\null
+\cvevent
+{Ago 17 - Nov 17}
+{Developer}
+{IP Telecom}
+{Development of a billing and rating platform, from scratch, to replace excel sheets used by IP Telecom.}
+{\cvlist{
+		\item Build calls rating mechanism
+		\item Build billing platform
+}}
+{\cvlist {
+		\item Spring, jBilling
+		\item PostgreSQL, Hibernate
+		\item Git, Grails, Docker
+}}
+{\cvlist{
+		\item Successfully implemented a complex rating mechanism
+		\item IP Telecom successfully moved from manual work in excel to automated system
+}}
+
+\vfill\null
+\cvevent
+	{May 14 - Ago 17}
+	{Developer/Oncall}
+	{SIBS}
+	{Backend developer of a multi service platform with focus on services backing the biggest Portuguese mobile payment app called MB Way.}
+	{\cvlist{
+		\item Build multi service platform
+		\item Build a communication Gateway to send out emails, sms and mobile push notifications
+		\item Build a backoffice for the multi service platform
+		\item Production maintenance and oncall duties
+	}}
+	{\cvlist {
+		\item Java EE, EJB, IBM Websphere
+		\item Web services, SOAP
+		\item TIBCO, JMS, JSF/JSP
+		\item DB2, JPA
+		\item Git, Harvest, Maven, JIRA, Bitbucket
+	}}
+	{\cvlist{
+		\item Portuguese most used payment mobile app
+		\item Communication Gateway used in 3D Secure and MBCODE
+		\item Nice and friendly Backoffice
+		\item Quick response to production incidents
+	}}
+
+\vfill\null
+\cvevent
+	{Feb 14 - May 14}
+	{Developer}
+	{Vodafone Hungary}
+	{Development of a CRM system.}
+	{\cvlist{
+		\item Build a CRM based on a pre existing framework
+	}}
+	{\cvlist {
+		\item Java EE, jBoss, GWT
+		\item WebMethods, SOAP, REST
+		\item Oracle DB, Hibernate
+		\item Git, Maven
+	}}
+	{\cvlist{
+		\item Company moved some manual processes using excel to use an automated system
+		\item Successfully create a mechanism to handle complex client hierarchy and products
+	}}
+
+\vfill\null
+\cvevent
+	{Oct 13 - Feb 14}
+	{Software Performance Engineer}
+	{iTSCOM}
+	{Responsible for improving a CRM system performance according to the client KPIs, development of automated tests including load tests.}
+	{\cvlist{
+		\item Detect and improve slow call to the server
+		\item Create automated tests
+		\item Create load tests
+		\item Meet client KPIs
+	}}
+	{\cvlist {
+		\item Java EE, jBoss, GWT 
+		\item Jmeter, JUnit, Selenium
+		\item Oracle, Hibernate
+		\item SVN, Maven
+	}}
+	{\cvlist{
+		\item Faster CRM system improving that way the user experience
+		\item All client KPIs achieved
+	}}
+
+% hotfixes to create fake-space to ensure the whole height is used
+\mbox{}
+\vfill
+\mbox{}
+\vfill
+\mbox{}
+\vfill
+\mbox{}
+\end{rightcolumn}
+\end{paracol}
+\end{document}
+
